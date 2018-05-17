@@ -1,23 +1,20 @@
 import Foundation
 import SwiftSoup
-/*
-let base = "http://web2.assist.org/web-assist/"
-let part = "articulationAgreement.do?inst1=none&inst2=none&ia=DAC&ay=17-18&oia=CSUMA&dir=1"
-*/
+
 let DEBUG = true
 let welcomeBase = URLComponents(string: "http://web2.assist.org/web-assist/")
 // debug
 
-/// institution as ["url" : "Institution Name"]
-var institution = [String : String]()
+/// origin as ["url" : "Institution Name"]
+var origin = [String : String]()
 
-/// agreements as ["url" : "Institution Name"]
-var transfers = [String : String]()
+/// destination as ["url" : "Institution Name"]
+var destination = [String : String]()
 
-/// majors as ["url" : "Major Name"]
+/// majors as ["code" : "Major Name"]
 var majors = [String : String]()
 
-// parse first page for campuses
+// parse first page for origin campuses
 do {
     print("Parsing \(welcomeBase!.string!)")
     let html = try String(contentsOf: welcomeBase!.url!, encoding: .ascii) // get html data from url as string
@@ -29,13 +26,13 @@ do {
             let instCode = try options.val()
             //instCode = instCode.replacingOccurrences(of: ".html", with: "")
             if instCode.count != 0 {
-                institution[instCode] = try options.text()
+                origin[instCode] = try options.text()
             }
         }
     }
     
     if DEBUG {
-        for i in institution {
+        for i in origin {
             print(i)
         }
     }
@@ -44,9 +41,9 @@ do {
     print("Error: \(error)")
 }
 
-// parse second page for transfer campuses
+// parse second page for destination campuses
 // string to be changed
-let iKeys = institution.keys
+let iKeys = origin.keys
 let secondPage = URLComponents(string: welcomeBase!.string! + iKeys.first!)
 
 do {
@@ -58,12 +55,12 @@ do {
         for options in elem[2].children() {
             let transferCode = try options.val()
             if transferCode.count != 0 {
-                transfers[transferCode] = try options.text()
+                destination[transferCode] = try options.text()
             }
         }
     }
     if DEBUG {
-        for i in transfers {
+        for i in destination {
             print(i)
         }
     }
@@ -74,7 +71,7 @@ do {
 
 // parse third page for majors
 // string to be changed
-let tKeys = transfers.keys
+let tKeys = destination.keys
 let thirdPage = URLComponents(string: welcomeBase!.string! + tKeys.first!)
 
 do {
@@ -150,3 +147,13 @@ do {
     //print(assistAgreement.array().count)
     //print("HTML : \(assistAgreement.array())")
 }
+/*
+ Transferring from : DAC
+ Transferring to : UCB
+ Required: [dac -> ucb]
+ [MATH 1A & MATH 1B & MATH 1C] : [MATH 6]
+ [CIS 1] : [NA]
+ 
+ Optional:
+ ...
+ */
