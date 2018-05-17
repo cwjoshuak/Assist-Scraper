@@ -127,12 +127,10 @@ var agreementPage = URLComponents(string: report)
 agreementPage?.queryItems = params
 print(agreementPage!.url)
 
-/*
-print(baseURL)
 do {
     
-    let myHTMLString = try String(contentsOf: baseURL!, encoding: .ascii)
-    let doc: Document = try SwiftSoup.parseBodyFragment(myHTMLString)
+    let html = try String(contentsOf: agreementPage!.url!, encoding: .ascii)
+    let doc: Document = try SwiftSoup.parseBodyFragment(html)
     let body: Element? = doc.body()
     let text = try body?.text()
     //print(text)
@@ -152,5 +150,3 @@ do {
     //print(assistAgreement.array().count)
     //print("HTML : \(assistAgreement.array())")
 }
-
-*/
