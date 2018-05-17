@@ -99,26 +99,33 @@ do {
 } catch let error {
     print("Error: \(error)")
 }
+print(secondPage!.queryItems)
+print()
+print(thirdPage!.queryItems)
 
-
-var report = "http://web2.assist.org/cgi-bin/REPORT_2/Rep2.pl?"
+let report = "http://web2.assist.org/cgi-bin/REPORT_2/Rep2.pl?"
 //aay=16-17&oia=UCB&dora=BUS%20ADM&ay=16-17&event=19&agreement=aa&ria=UCB&sia=DAC&ia=DAC&dir=1&&sidebar=false&rinst=left&mver=2&kind=5&dt=2"
-var params = [
-    ["aay" : ""],
-    ["oia" : ""],
-    ["dora" : "" ],
-    ["ay" : ""],
-    ["event" : ""],
-    ["agreement" : ""],
-    ["ria" : ""],
-    ["sia" : ""],
-    ["ia" : ""],
-    ["dir": ""],
-    ["&sidebar" : "false"],
-    ["rinst" : "left"],
-    ["mver" : "2"],
-    ["kind" : "5"],
-    ["dt" : "2"]]
+let queries = thirdPage!.queryItems!
+var params: [URLQueryItem] = [
+    URLQueryItem(name: "aay", value: queries[3].value), // aay is year agreement for transferring from
+    URLQueryItem(name: queries[4].name, value: queries[4].value), // oia is same as ria - transferring to
+    URLQueryItem(name: "dora", value: "PHYS" /*major*/), // dora is major
+    URLQueryItem(name: "ay", value: queries[3].value), // ay is year agreement for transferring to
+    URLQueryItem(name: "event", value: "19"),
+    URLQueryItem(name: "agreement", value: "aa"),
+    URLQueryItem(name: "ria", value: queries[4].value), // ria is same as oia - transferring to
+    URLQueryItem(name: "sia", value: queries[2].value), // sia is same as ia - transferring from
+    URLQueryItem(name: "ia", value: queries[2].value), // ia is same as sia - transferring from
+    URLQueryItem(name: "dir", value: queries[5].value),
+    URLQueryItem(name: "&sidebar", value: "false"),
+    URLQueryItem(name: "rinst", value: "left"),
+    URLQueryItem(name: "mver", value: "2"),
+    URLQueryItem(name: "kind", value: "5"),
+    URLQueryItem(name: "dt", value: "2")
+]
+var agreementPage = URLComponents(string: report)
+agreementPage?.queryItems = params
+print(agreementPage!.url)
 
 /*
 print(baseURL)
