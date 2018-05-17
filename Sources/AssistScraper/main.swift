@@ -5,7 +5,8 @@ let base = "http://web2.assist.org/web-assist/"
 let part = "articulationAgreement.do?inst1=none&inst2=none&ia=DAC&ay=17-18&oia=CSUMA&dir=1"
 */
 let DEBUG = true
-let welcomeBase = URL(string: "http://web2.assist.org/web-assist/")
+let welcomeBase = URLComponents(string: "http://web2.assist.org/web-assist/")
+// debug
 
 /// institution as ["url" : "Institution Name"]
 var institution = [String : String]()
@@ -18,9 +19,9 @@ var majors = [String : String]()
 
 // parse first page for campuses
 do {
-    print("Parsing \(welcomeBase!.absoluteString)")
-    let url = try String(contentsOf: welcomeBase!, encoding: .ascii)
-    let els: Elements? = try SwiftSoup.parse(url).select("form")
+    print("Parsing \(welcomeBase!.string!)")
+    let html = try String(contentsOf: welcomeBase!.url!, encoding: .ascii) // get html data from url as string
+    let els: Elements? = try SwiftSoup.parse(html).select("form")
     //if (try els?.attr("name")) == "ia" {
     if let els = els {
         let elem = try els.select("select").array()
@@ -46,12 +47,11 @@ do {
 // parse second page for transfer campuses
 // string to be changed
 let iKeys = institution.keys
-let spurl = (welcomeBase!.absoluteString + iKeys.first!).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-let secondPage = URL(string: spurl)
+let secondPage = URLComponents(string: welcomeBase!.string! + iKeys.first!)
 
 do {
-    print("Parsing \(secondPage!.absoluteString)")
-    let url = try String(contentsOf: secondPage!, encoding: .ascii)
+    print("Parsing \(secondPage!.string!)")
+    let url = try String(contentsOf: secondPage!.url!, encoding: .ascii) // get second page html in form of string
     let els: Elements? = try SwiftSoup.parse(url).select("form")
     if let els = els {
         let elem = try els.select("select").array()
@@ -75,23 +75,17 @@ do {
 // parse third page for majors
 // string to be changed
 let tKeys = transfers.keys
-let tpurl = (welcomeBase!.absoluteString + tKeys.first!).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-let thirdPage = URL(string: tpurl)
+let thirdPage = URLComponents(string: welcomeBase!.string! + tKeys.first!)
 
 do {
-    print("Parsing \(thirdPage!.absoluteString)")
-    let url = try String(contentsOf: thirdPage!, encoding: .ascii)
+    print("Parsing \(thirdPage!.string!)")
+    let url = try String(contentsOf: thirdPage!.url!, encoding: .ascii)
     let els: Elements? = try SwiftSoup.parse(url).select("form")
     if let els = els {
         let elem = try els.select("select").array()
-        print(elem.count)
-        
         for options in elem[3].children() {
-            
-            //print(options)
             let major = try options.val()
-            //instCode = instCode.replacingOccurrences(of: ".html", with: "")
-            if major.count != 0 {
+            if major.count != 0 && major != "-1" {
                 majors[major] = try options.text()
             }
         }
