@@ -102,6 +102,7 @@ print(thirdPage!.queryItems)
 
 let report = "http://web2.assist.org/cgi-bin/REPORT_2/Rep2.pl?"
 //aay=16-17&oia=UCB&dora=BUS%20ADM&ay=16-17&event=19&agreement=aa&ria=UCB&sia=DAC&ia=DAC&dir=1&&sidebar=false&rinst=left&mver=2&kind=5&dt=2"
+
 let queries = thirdPage!.queryItems!
 var params: [URLQueryItem] = [
     URLQueryItem(name: "aay", value: queries[3].value), // aay is year agreement for origin
@@ -129,36 +130,33 @@ do {
     let html = try String(contentsOf: agreementPage!.url!, encoding: .ascii)
     let doc: Document = try SwiftSoup.parseBodyFragment(html)
     let body: Element? = doc.body()
-    let x = body?.children()
+    //let x = body?.children()
     let text = try body?.text()
-    //print(text)
-    var arr = text!.split(separator: "\n")
-    var count = 0
+    
+    let allLines = text?.components(separatedBy: "\n")
+    let splitter = "--------------------------------------------------------------------------------"
+    let arrData = allLines!.split(separator: splitter)
+    //let regex = try! NSRegularExpression(pattern: "[^|]+", options: [.caseInsensitive, .anchorsMatchLines])
 
-    let str = "--------------------------------------------------------------------------------"
-
-    /*
-    for i in arr {
-        
-        if (!i.contains("|")) && (!i.contains(str)) {
-            
-            arr.remove(at: count)
-            count -= 1
-        } else {
-            print("didn't remove \(i) \(i.count) \(str.count)")
+    var leftArr = [String]()
+    var rightArr = [String]()
+    for i in arrData {
+        //print(i)
+        for j in i {
+            if !j.contains("|") {
+                continue
+            }
+            let course = j.split(separator: "|")
+            leftArr.append(String(course[0]))
+            rightArr.append(String(course[1]))
         }
         
-        count += 1
-    }*/
-    /*for i in t {
-        print(i)
-    }*/
-    for i in arr {
-        print(i)
     }
-    //print(assistAgreement.array().count)
-    //print("HTML : \(assistAgreement.array())")
+    for (i,j) in zip(leftArr, rightArr) {
+        print("\(i) -> \(j)")
+    }
 }
+
 /*
  Transferring from : DAC
  Transferring to : UCB
