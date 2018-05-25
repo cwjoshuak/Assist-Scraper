@@ -140,9 +140,9 @@ do {
 
     var leftArr = [String]()
     var rightArr = [String]()
-    for i in arrData {
+    for lines in arrData {
         //print(i)
-        for j in i {
+        for j in lines {
             if !j.contains("|") {
                 continue
             }
@@ -150,7 +150,6 @@ do {
             leftArr.append(String(course[0]))
             rightArr.append(String(course[1]))
         }
-        
     }
     for (i,j) in zip(leftArr, rightArr) {
         print("\(i) -> \(j)")
