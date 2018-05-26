@@ -272,11 +272,10 @@ do {
 //            let course = j.split(separator: "|")
         
     }
-for (i,j) in zip(leftArr, rightArr) {
-    print("\(i) -> \(j)")
-}
+    // below contains debug code bleh
+    /*
     var equivalent = [Equivalency]()
-    var e = Equivalency()
+    let e = Equivalency()
     let c1 = Course("UCB", cid: "CHEM 1A", cname: "General Chemistry", units: 3.0)
     let c2 = Course("UCB", cid: "CHEM 1AL", cname: "General Chemistry Laboratory", units: 1.0)
     let c3 = Course("UCB", cid: "CHEM 1B", cname: "General Chemistry", units: 4.0)
@@ -287,20 +286,25 @@ for (i,j) in zip(leftArr, rightArr) {
     //let collegeList = [x1, x2]
     
     e.addEquivalency(courseList)
-    
     equivalent.append(e)
+    */
+    
+    // print arrays before parsing
+    for (i,j) in zip(leftArr, rightArr) {
+        print("\(i) -> \(j)")
+    }
+    
+    // json encoding
     let encoder = JSONEncoder()
     encoder.outputFormatting = .prettyPrinted
     
     
     let ev = parseCourseSet(lhs: leftArr, rhs: rightArr)
     let data = try! encoder.encode(ev)
-    print(String(data: data, encoding: .utf8)!)
-    print(ev)
     
-    for (i,j) in zip(leftArr, rightArr) {
-        print("\(i) -> \(j)")
-    }
+     // print json encoded obj
+    print(String(data: data, encoding: .utf8)!)
+     // throw it into a json parser to see better.
 }
 
 /*
