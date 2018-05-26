@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B2D6C59920B92B08000FFD9F /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D6C59820B92B08000FFD9F /* Course.swift */; };
+		B2D6C59B20B9B34D000FFD9F /* Equivalency.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D6C59A20B9B34D000FFD9F /* Equivalency.swift */; };
 		OBJ_127 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* main.swift */; };
 		OBJ_130 /* SwiftSoup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "SwiftSoup::SwiftSoup::Product" /* SwiftSoup.framework */; };
 		OBJ_139 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
@@ -81,7 +83,8 @@
 
 /* Begin PBXFileReference section */
 		"AssistScraper::AssistScraper::Product" /* AssistScraper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = AssistScraper; sourceTree = BUILT_PRODUCTS_DIR; };
-		B237063D20AC7DD5009B039F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2D6C59820B92B08000FFD9F /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
+		B2D6C59A20B9B34D000FFD9F /* Equivalency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Equivalency.swift; sourceTree = "<group>"; };
 		OBJ_32 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = Package.swift; path = "/Users/Joshyy/Desktop/AssistScraper/.build/checkouts/SwiftSoup.git-4934909956721398735/Package.swift"; sourceTree = "<group>"; };
 		OBJ_33 /* ArrayExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExt.swift; sourceTree = "<group>"; };
 		OBJ_34 /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
@@ -266,7 +269,8 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_9 /* main.swift */,
-				B237063D20AC7DD5009B039F /* Info.plist */,
+				B2D6C59A20B9B34D000FFD9F /* Equivalency.swift */,
+				B2D6C59820B92B08000FFD9F /* Course.swift */,
 			);
 			name = AssistScraper;
 			path = Sources/AssistScraper;
@@ -378,6 +382,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				B2D6C59B20B9B34D000FFD9F /* Equivalency.swift in Sources */,
+				B2D6C59920B92B08000FFD9F /* Course.swift in Sources */,
 				OBJ_127 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
