@@ -126,6 +126,117 @@ var agreementPage = URLComponents(string: report)
 agreementPage?.queryItems = params
 print(agreementPage!.url)
 
+//        let result = fullLine.matches(in: left, range: NSRange(left.startIndex..., in: left)).map {
+//            String(left[Range($0.range, in: left)!])
+//        }
+func parseCourseSet(lhs: [String], rhs: [String]) -> Equivalency {
+    
+    let eqSet = Equivalency()
+    var leftSet = [Course]()
+    var rightSet = [Course]()
+    
+    var separateLeft = false
+    var separateRight = false
+    
+    //var leftCounter = 0
+    //var rightCounter = 0
+    /// $0: Full Line
+    /// $1: cid
+    /// $2: 'spaces'
+    /// $3: '&'
+    /// $4: course name
+    /// $5: (units) where units is a possible double value
+    let fullLine = try! NSRegularExpression(pattern: "(\\w+ \\w+)( +)(&)?(.+)(\\(\\d\\.?\\d?\\)$)", options: [.caseInsensitive])
+    //(\\w+ \\w+)( +)(&)?([^(0-9)]+)(\\(\\d\\.?\\d?\\)$)
+    let alt = try! NSRegularExpression(pattern: "(^\\s+OR\\s+$)", options: [.caseInsensitive])
+    let append = try! NSRegularExpression(pattern: "(.[^\\(\\d\\)]+)$", options: [.caseInsensitive, .anchorsMatchLines])
+    //(^\\s*\\w*?\\s*&?\\s*\\w+\\s?\\w*\\s*$)
+    //let breaker = try! NSRegularExpression(pattern: "-{5}")
+    for (left, right) in zip(lhs, rhs) {
+        let leftRange = NSRange(left.startIndex..., in: left)
+        let rightRange = NSRange(right.startIndex..., in: right)
+        let leftCourse = Course()
+        let rightCourse = Course()
+        // Case 0: Line is a breaker, course separator
+        if left.contains("-----") && right.contains("-----"){
+            if leftSet.count != 0 && rightSet.count != 0 {
+                eqSet.addEquivalency([leftSet, rightSet])
+                leftSet = [Course]()
+                rightSet = [Course]()
+                continue
+            }
+            continue
+        }
+        
+        // Case 1: Line is OR, sets bool flags for later use
+        separateLeft = alt.numberOfMatches(in: left, range: leftRange) == 1
+        separateRight = alt.numberOfMatches(in: right, range: rightRange) == 1
+        
+        //print(fullLine.numberOfMatches(in: left, range: leftRange))
+        //print(!left.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        
+        // Case 1: this is to append course names to previous course
+        if let prevName = append.firstMatch(in: left, range: leftRange) {
+            if !separateLeft {
+                let appendingcname = String(left[Range(prevName.range(at: 0), in: left)!]).trimmingCharacters(in: .whitespacesAndNewlines)
+                if appendingcname.lowercased().range(of:"articulate") != nil {
+                    leftCourse.cname = "NO COURSE ARTICULATED"
+                    leftSet.append(leftCourse)
+                } else {
+                    leftSet[leftSet.count-1].cname?.append(" \(appendingcname)")
+                }
+            }
+        } else if !left.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !separateLeft {
+            // FOR LEFT SIDE, if line isn't empty
+            fullLine.enumerateMatches(in: left, range: leftRange) { matches, flags, stop in
+                // set cid
+                leftCourse.cid = String(left[Range(matches!.range(at: 1), in: left)!])
+                // set cname
+                leftCourse.cname = String(left[Range(matches!.range(at: 4), in: left)!]).trimmingCharacters(in: .whitespacesAndNewlines)
+                // set units
+                leftCourse.units = Double(String(left[Range(matches!.range(at: 5), in: left)!]).trimmingCharacters(in: NSCharacterSet.punctuationCharacters))
+            }
+            leftSet.append(leftCourse)
+            //leftCounter += 1
+        }
+        
+        if let prevName = append.firstMatch(in: right, range: rightRange) {
+            if !separateRight {
+                let appendingcname = String(right[Range(prevName.range(at: 0), in: left)!]).trimmingCharacters(in: .whitespacesAndNewlines)
+                if appendingcname.lowercased().range(of:"articulate") != nil {
+                    rightCourse.cname = "NO COURSE ARTICULATED"
+                    rightSet.append(rightCourse)
+                } else {
+                    rightSet[rightSet.count-1].cname?.append(" \(appendingcname)")
+                }
+                
+            }
+        } else if !right.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !separateRight {
+            // FOR RIGHT SIDE
+            fullLine.enumerateMatches(in: right, range: rightRange) { matches, flags, stop in
+                // set cid
+                rightCourse.cid = String(right[Range(matches!.range(at: 1), in: right)!])
+                // set cname
+                rightCourse.cname = String(right[Range(matches!.range(at: 4), in: right)!]).trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+                // set units
+                rightCourse.units = Double(String(right[Range(matches!.range(at: 5), in: right)!]).trimmingCharacters(in: NSCharacterSet.punctuationCharacters))
+            }
+            rightSet.append(rightCourse)
+            //rightCounter += 1
+        }
+        
+        //left = fullLine.stringByReplacingMatches(in: left, range: NSRange(left.startIndex..., in: left), withTemplate: "$0, $1, $2, $3, $4, $5, $6")
+        //print(x)
+        
+        
+//        // check if current line needs to append next (few) lines
+//        appendPrevLeft = fullLine.numberOfMatches(in: left, range: NSRange(left.startIndex..., in: left)) == 1
+//        appendPrevRight = fullLine.numberOfMatches(in: right, range: NSRange(right.startIndex..., in: right)) == 1
+
+    }
+    return eqSet
+}
+
 do {
     let html = try String(contentsOf: agreementPage!.url!, encoding: .ascii)
     let doc: Document = try SwiftSoup.parseBodyFragment(html)
@@ -161,6 +272,32 @@ do {
 //            let course = j.split(separator: "|")
         
     }
+for (i,j) in zip(leftArr, rightArr) {
+    print("\(i) -> \(j)")
+}
+    var equivalent = [Equivalency]()
+    var e = Equivalency()
+    let c1 = Course("UCB", cid: "CHEM 1A", cname: "General Chemistry", units: 3.0)
+    let c2 = Course("UCB", cid: "CHEM 1AL", cname: "General Chemistry Laboratory", units: 1.0)
+    let c3 = Course("UCB", cid: "CHEM 1B", cname: "General Chemistry", units: 4.0)
+    let x1 = Course("FOOTHILL", cid: "CHEM 1A", cname: "General Chemistry", units: 5.0)
+    let x2 = Course("FOOTHILL", cid: "CHEM 1B", cname: "General Chemistry", units: 5.0)
+    
+    let courseList = [[c1, c2, c3], [x1,x2], [c1,c2]]
+    //let collegeList = [x1, x2]
+    
+    e.addEquivalency(courseList)
+    
+    equivalent.append(e)
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = .prettyPrinted
+    
+    
+    let ev = parseCourseSet(lhs: leftArr, rhs: rightArr)
+    let data = try! encoder.encode(ev)
+    print(String(data: data, encoding: .utf8)!)
+    print(ev)
+    
     for (i,j) in zip(leftArr, rightArr) {
         print("\(i) -> \(j)")
     }
