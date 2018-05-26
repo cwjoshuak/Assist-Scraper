@@ -135,21 +135,31 @@ do {
     
     let allLines = text?.components(separatedBy: "\n")
     let splitter = "--------------------------------------------------------------------------------"
-    let arrData = allLines!.split(separator: splitter)
+    //let arrData = allLines!.split(separator: splitter)
     //let regex = try! NSRegularExpression(pattern: "[^|]+", options: [.caseInsensitive, .anchorsMatchLines])
 
     var leftArr = [String]()
     var rightArr = [String]()
-    for lines in arrData {
+    for lines in allLines! {
         //print(i)
-        for j in lines {
-            if !j.contains("|") {
-                continue
-            }
-            let course = j.split(separator: "|")
+        if !lines.contains("|") && !lines.contains(splitter) {
+            continue
+        }
+        if lines.contains(splitter) {
+            leftArr.append("-----")
+            rightArr.append("-----")
+        } else {
+            let course = lines.split(separator: "|")
             leftArr.append(String(course[0]))
             rightArr.append(String(course[1]))
         }
+        
+//        for j in lines {
+//            if !j.contains("|") {
+//                continue
+//            }
+//            let course = j.split(separator: "|")
+        
     }
     for (i,j) in zip(leftArr, rightArr) {
         print("\(i) -> \(j)")
