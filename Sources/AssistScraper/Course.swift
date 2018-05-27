@@ -9,13 +9,13 @@ import Foundation
 final class Course : Codable {//, Hashable {
 
     var cid: String?
-    var cname: String?
+    var name: String?
     var institution: String?
     var units: Double?
     init() { }
-    init(_ institution: String?, cid: String?, cname: String?, units: Double?) {
+    init(_ institution: String?, cid: String?, name: String?, units: Double?) {
         self.cid = cid
-        self.cname = cname
+        self.name = name
         self.institution = institution
         self.units = units
     }
