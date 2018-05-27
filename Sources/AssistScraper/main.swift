@@ -1,5 +1,4 @@
 import Foundation
-import SwiftSoup
 
 let DEBUG = true
 let welcomeBase = "http://web2.assist.org/web-assist/"
