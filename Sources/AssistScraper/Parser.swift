@@ -11,8 +11,7 @@ import SwiftSoup
 final class Parser {
     let welcomeBase: URLComponents?
     let DEBUG: Bool
-    let reportPage: URLComponents?
-    
+    let report: String
     var secondPage: URLComponents?
     var thirdPage: URLComponents?
     var agreementPage: URLComponents?
@@ -25,10 +24,10 @@ final class Parser {
     /// majors as ["code" : "Major Name"]
     var majors = [String : String]()
     
-    init(_ base: String, _ DEBUG: Bool?) {
+    init(_ base: String, _ report: String, _ DEBUG: Bool?) {
         welcomeBase = URLComponents(string: base)
+        self.report = report
         self.DEBUG = DEBUG ?? false
-        reportPage = nil
         secondPage = nil
         thirdPage = nil
         agreementPage = nil
